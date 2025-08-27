@@ -10,7 +10,14 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="antialiased">
+<body class="antialiased page-loading">
+    <!-- Splash Screen -->
+    <div id="splash" class="splash" aria-hidden="true">
+        <div class="splash-inner">
+            <img src="logo1.png" alt="Cowebsmith" class="splash-logo"/>
+            <div class="splash-ring"></div>
+        </div>
+    </div>
     <!-- Header/Navigation -->
     <header class="fixed top-0 left-0 right-0 z-50">
         <!-- Navigation Bar -->
@@ -343,6 +350,30 @@
     </footer>
 </body>
 <script>
+    (function() {
+        // Splash screen control
+        const MIN_SHOW_MS = 2000; // ensure animation is seen for 4s
+        const splash = document.getElementById('splash');
+        const startTime = Date.now();
+        function hideSplash() {
+            if (!splash) return;
+            const elapsed = Date.now() - startTime;
+            const delay = Math.max(0, MIN_SHOW_MS - elapsed);
+            setTimeout(() => {
+                splash.classList.add('is-hidden');
+                // Reveal page and remove splash after transition
+                splash.addEventListener('transitionend', () => {
+                    document.body.classList.remove('page-loading');
+                    splash.remove();
+                }, { once: true });
+            }, delay);
+        }
+        if (document.readyState === 'complete') {
+            hideSplash();
+        } else {
+            window.addEventListener('load', hideSplash, { once: true });
+        }
+    })();
     (function() {
         const header = document.querySelector('header');
         const progress = document.getElementById('scrollProgress');
